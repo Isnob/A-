@@ -1,3 +1,3 @@
-# Pathfinding Visualizer (skeleton)
+# Pathfinding Visualizer
 
 Этот репозиторий находится в работе
