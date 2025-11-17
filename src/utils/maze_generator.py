@@ -1,9 +1,6 @@
 import random
 import yaml
 
-CONFIG_PATH = "config/config.yaml"
-
-
 def generate_maze(width, height, start, finish):
     maze = []
     for y in range(height):
@@ -19,12 +16,19 @@ def generate_maze(width, height, start, finish):
     fx, fy = finish
     maze[sy][sx] = "S"
     maze[fy][fx] = "F"
-    return maze
+    return ["".join(str(cell) for cell in row) for row in maze]
 
 
-def write_maze_to_config(name, maze, config_path=CONFIG_PATH):
+def write_maze_to_config(name, maze, config_path):
     with open(config_path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh) or {}
     data[name] = maze
     with open(config_path, "w", encoding="utf-8") as fh:
-        yaml.safe_dump(data, fh, allow_unicode=True)
+        yaml.safe_dump(
+            data,
+            fh,
+            allow_unicode=True,
+            default_flow_style=False,
+            sort_keys=False,
+            indent=2,
+        )

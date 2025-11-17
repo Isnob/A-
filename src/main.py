@@ -1,53 +1,38 @@
-import time
+import argparse
+import pathlib
 
-import yaml
-from core.manager import 
-from core.algorithms.astar import Astar, chebyshev
-from core.maze import Maze
+from src.core.manager import Manager
+
+PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[1]
+CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
 
 
-def render_maze(maze, path, status):
-    path
-    rows = []
-    for y in range(maze.length):
-        line = []
-        for x in range(maze.width):
-            node = maze.grid[y][x]
-            pos = (x, y)
-            if pos == maze.start:
-                line.append('S')
-            elif pos == maze.finish:
-                line.append('F')
-            elif node.type == "wall":
-                line.append('\033[31mo\033[0m')
-            elif pos in path:
-                line.append('█')
-            else:
-                line.append(' ')
-        rows.append(' '.join(line))
-    print("\033[H\033[J", end="")
-    print(f"Status: {status}")
-    print('\n'.join(rows))
+def build_parser():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    generate = subparsers.add_parser("generate")
+    generate.add_argument("name")
+
+    simulate = subparsers.add_parser("simulate")
+    simulate.add_argument("name")
+
+    delete = subparsers.add_parser("delete")
+    delete.add_argument("name")
+
+    return parser
 
 
 def main():
+    args = build_parser().parse_args()
+    manager = Manager()
 
-
-    config_path = "config/config.yaml"
-    maze_key = "maze"
-
-    with open(config_path, "r") as file:
-        data = yaml.safe_load(file)
-
-    maze = Maze(data, maze_key)
-    astar = Astar(maze, chebyshev)
-
-    while True:
-        status, path = astar.step()
-        render_maze(maze, path or [], status)
-        if status != "IN PROCESS":
-            break
-        time.sleep(0.02)
+    if args.command == "generate":
+        manager.generate_and_write_maze(args.name, CONFIG_PATH)
+    elif args.command == "simulate":
+        manager.start_simulation(args.name, CONFIG_PATH)
+    elif args.command == "delete":
+        manager.delete_maze(args.name, CONFIG_PATH)
 
 
 if __name__ == "__main__":

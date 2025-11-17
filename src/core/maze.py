@@ -30,7 +30,7 @@ class Maze():
                 elif ch == "F":
                     node = Node(x, y, "finish")
                     self.finish = (x, y)
-                elif ch == 1:
+                elif ch in (1, "1"):
                     node = Node(x, y, "wall")
                 else:
                     node = Node(x, y, "empty")
