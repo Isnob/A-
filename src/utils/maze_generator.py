@@ -1,7 +1,7 @@
 import random
 import yaml
 
-def generate_maze(width, height, start, finish):
+def generate_maze(width, height, start, finish, density=0.5):
     maze = []
     for y in range(height):
         row = []
@@ -9,7 +9,7 @@ def generate_maze(width, height, start, finish):
             if y in (0, height - 1) or x in (0, width - 1):
                 row.append(1)
             else:
-                row.append(random.randint(0, 1))
+                row.append(1 if random.random() < density else 0)
         maze.append(row)
 
     sx, sy = start

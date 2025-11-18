@@ -42,3 +42,17 @@ class BFS():
             path.add((node.x, node.y))
             node = node.parent
         return path
+
+    def get_state(self):
+        path = self.get_path(self.current) if self.current is not None else set()
+
+        visited = {(n.x, n.y) for n in self.closed}
+        frontier = {(n.x, n.y) for n in self.open}
+        current = (self.current.x, self.current.y) if self.current is not None else None
+
+        return {
+            "path": path,
+            "visited": visited,
+            "frontier": frontier,
+            "current": current,
+        }

@@ -16,15 +16,21 @@ class Astar():
         self.start_node = maze.grid[sy][sx]
         fx, fy = maze.finish
         self.finish_node = maze.grid[fy][fx]
-        self.start_node.g = 0
+
         self.heruistic = heruistic
+
+        self.counter = itertools.count(0)
+
+        self.start_node.g = 0
         self.start_node.h = heruistic(self.start_node, self.finish_node)
         self.start_node.f = self.start_node.g + self.start_node.h
-        self.way = []
-        self.open = [[self.start_node.f, self.start_node.h, 0, self.start_node]]
+
+        self.open = []
+        heapq.heappush(self.open, (self.start_node.f, self.start_node.h, next(self.counter), self.start_node))
         self.closed = set()
+        self.current = None
         
-        self.counter = itertools.count(1)
+        
     
     def get_current(self):
         while self.open:
@@ -36,6 +42,7 @@ class Astar():
     def step(self):
         way = []
         current_node = self.get_current()
+        self.current = current_node
         if current_node is None:
             return "NO_PATH", self.get_path(current_node)
         elif current_node is self.finish_node:
@@ -61,3 +68,20 @@ class Astar():
             path.add((node.x, node.y))
             node = node.parent
         return path
+
+    def _iter_open_nodes(self):
+        for _, _, _, node in self.open:
+            yield node
+
+    def get_state(self):
+        path = self.get_path(self.current) if self.current is not None else set()
+        visited = {(n.x, n.y) for n in self.closed}
+        frontier = {(n.x, n.y) for n in self._iter_open_nodes()}
+        current = (self.current.x, self.current.y) if self.current is not None else None
+
+        return {
+            "path": path,
+            "visited": visited,
+            "frontier": frontier,
+            "current": current,
+        }
