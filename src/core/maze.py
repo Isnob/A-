@@ -39,17 +39,28 @@ class Maze():
 
         return grid
 
-    def get_neighbours(self, x, y):
-        directions = [
-            (0, 1),   # up
-            (1, 0),   # right
-            (0, -1),  # down
-            (-1, 0),  # left
-            (1, 1),   # up-right
-            (1, -1),  # down-right
-            (-1, -1), # down-left
-            (-1, 1),  # up-left
-        ]
+    def get_neighbours(self, x, y, dim=8):
+
+        if dim == 8:
+            directions = [
+                (0, 1),   # up
+                (1, 0),   # right
+                (0, -1),  # down
+                (-1, 0),  # left
+                (1, 1),   # up-right
+                (1, -1),  # down-right
+                (-1, -1), # down-left
+                (-1, 1),  # up-left
+            ]
+
+        elif dim == 4:
+            directions = [
+                (0, 1),   # up
+                (1, 0),   # right
+                (0, -1),  # down
+                (-1, 0),  # left
+            ]
+
         neighbours = []
 
         for dx, dy in directions:

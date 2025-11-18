@@ -16,6 +16,8 @@ def build_parser():
 
     simulate = subparsers.add_parser("simulate")
     simulate.add_argument("name")
+    simulate.add_argument("algorithm", choices=["astar", "bfs", "dijkstra"])
+    simulate.add_argument("delay")
 
     delete = subparsers.add_parser("delete")
     delete.add_argument("name")
@@ -30,7 +32,7 @@ def main():
     if args.command == "generate":
         manager.generate_and_write_maze(args.name, CONFIG_PATH)
     elif args.command == "simulate":
-        manager.start_simulation(args.name, CONFIG_PATH)
+        manager.start_simulation(args.name, CONFIG_PATH, algorithm=args.algorithm, delay=args.delay)
     elif args.command == "delete":
         manager.delete_maze(args.name, CONFIG_PATH)
 
