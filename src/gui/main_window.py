@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QWidget,
     QHBoxLayout,
     QStatusBar,
-    QMessageBox,
+    QMessageBox, QFileDialog,
 )
 
 import yaml
@@ -75,6 +75,7 @@ class MainWindow(QMainWindow):
     def _connect_signals(self) -> None:
         c = self.controls
 
+        c.btn_import.clicked.connect(self.import_from_file)
         c.generate_requested.connect(self.on_generate_requested)
         c.delete_requested.connect(self.on_delete_requested)
         c.refresh_requested.connect(self._refresh_maze_list)
@@ -89,9 +90,23 @@ class MainWindow(QMainWindow):
 
         c.speed_changed.connect(self.on_speed_changed)
 
-        c.import_requested.connect(self.on_import_requested)
+    def import_from_file(self):
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Открыть файл лабиринта",
+            "",
+            "YAML files (*.yaml *.yml)"
+        )
 
-    # --- Работа с менеджером / YAML ---
+        if not file_path:
+            return  # пользователь отменил выбор
+
+        try:
+            self.config_path = file_path
+            self._refresh_maze_list()
+
+        except Exception as e:
+            QMessageBox.critical(self, "Ошибка", f"Не удалось загрузить файл:\n{e}")
 
     def _load_maze_names(self) -> list[str]:
         try:
@@ -150,11 +165,10 @@ class MainWindow(QMainWindow):
             f"Алгоритм: {self.current_algorithm_name}, лабиринт: {self.current_maze_name}"
         )
 
-    # --- Слоты от панели управления ---
+    # Слоты от панели управления
 
     def on_generate_requested(self, name, width, height, density, start, finish):
         try:
-            # старт и финиш пока заглушка — ты потом поправишь
             self.manager.generate_and_write_maze(
                 name=name,
                 config_path=self.config_path,
@@ -241,7 +255,6 @@ class MainWindow(QMainWindow):
         self.current_delay = max(0.0, float(delay_seconds))
         self.timer.setInterval(int(self.current_delay * 1000))
 
-        # если захочешь, можно ещё передавать delay в solver
         if self.solver is not None and hasattr(self.solver, "set_delay"):
             try:
                 self.solver.set_delay(self.current_delay)
@@ -249,16 +262,7 @@ class MainWindow(QMainWindow):
                 # не критично
                 pass
 
-    def on_import_requested(self) -> None:
-        # Заглушка под будущее.
-        # Здесь потом сделаешь диалог выбора файла и запись лабиринта в YAML.
-        QMessageBox.information(
-            self,
-            "Импорт",
-            "Импорт лабиринта ещё не реализован.",
-        )
-
-    # --- Таймер / шаги алгоритма ---
+    # Таймер / шаги алгоритма
 
     def _on_timer_tick(self) -> None:
 
@@ -310,7 +314,7 @@ class MainWindow(QMainWindow):
 
         self.maze_view.update_state(self.maze, state)
         self.statusBar().showMessage(
-            f"Status: {status} | Path len: {len(state["path"])} | Iter: {self.iteration} | Path len: {len(state['path'])}"
+            f"Status: {status} | Path len: {len(state['path'])} | Iter: {self.iteration} | Path len: {len(state['path'])}"
             )
 
 

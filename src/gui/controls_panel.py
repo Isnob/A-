@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import yaml
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import (
     QWidget,
@@ -12,7 +13,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QComboBox,
     QSlider,
-    QGroupBox,
+    QGroupBox, QMessageBox, QFileDialog,
 )
 
 
@@ -39,8 +40,6 @@ class ControlsPanel(QWidget):
     reset_requested = pyqtSignal()
 
     speed_changed = pyqtSignal(float)  # секунды
-
-    import_requested = pyqtSignal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -187,7 +186,6 @@ class ControlsPanel(QWidget):
         self.combo_mazes.currentTextChanged.connect(self.maze_selected)
         self.btn_refresh.clicked.connect(self.refresh_requested)
         self.btn_delete.clicked.connect(self._on_delete_clicked)
-        self.btn_import.clicked.connect(self.import_requested)
 
         # генерация
         self.btn_generate.clicked.connect(self._on_generate_clicked)
@@ -217,8 +215,6 @@ class ControlsPanel(QWidget):
             if index >= 0:
                 self.combo_mazes.setCurrentIndex(index)
         self.combo_mazes.blockSignals(False)
-
-    # --- приватные слоты / обработчики ---
 
     def _on_generate_clicked(self) -> None:
         name = self.edit_name.text().strip()

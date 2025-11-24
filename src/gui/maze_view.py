@@ -21,7 +21,6 @@ class MazeView(QWidget):
         self.frontier = set()
         self.current = None
 
-        # цвета можешь потом вынести в конфиг
         self.color_background = QColor(30, 30, 30)
         self.color_wall = QColor(40, 40, 40)
         self.color_empty = QColor(220, 220, 220)
@@ -31,8 +30,6 @@ class MazeView(QWidget):
         self.color_frontier = QColor(255, 200, 0)
         self.color_path = QColor(0, 255, 100)
         self.color_current = QColor(255, 80, 80)
-
-    # --- публичные методы ---
 
     def set_maze(self, maze) -> None:
         self.maze = maze
@@ -57,8 +54,6 @@ class MazeView(QWidget):
         self.frontier.clear()
         self.current = None
         self.update()
-
-    # --- QWidget overrides ---
 
     def minimumSizeHint(self) -> QSize:
         return QSize(400, 300)
