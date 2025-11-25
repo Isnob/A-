@@ -145,7 +145,6 @@ class MainWindow(QMainWindow):
                 maze_name=self.current_maze_name,
                 config_path=self.config_path,
                 algorithm=self.current_algorithm_name,
-                delay=self.current_delay,
             )
         except Exception as exc:
             QMessageBox.critical(

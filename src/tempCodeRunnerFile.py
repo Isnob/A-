@@ -1,0 +1,7 @@
+    generate.add_argument("--width", type=int, default=50)
+    generate.add_argument("--height", type=int, default=20)
+    generate.add_argument("--start-x", type=int, default=1)
+    generate.add_argument("--start-y", type=int, default=1)
+    generate.add_argument("--finish-x", type=int, default=40)
+    generate.add_argument("--finish-y", type=int, default=18)
+    generate.add_argument("--density", type=float, default=0.5)

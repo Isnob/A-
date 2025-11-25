@@ -10,9 +10,8 @@ from src.utils.maze_generator import generate_maze, write_maze_to_config
 
 class Manager:
 
-    def __init__(self, delay=0.02):
-        # delay теперь в основном нужен для CLI-режима
-        self.delay = delay
+    def __init__(self):
+        pass
 
     @staticmethod
     def _render_maze(maze, path, status, visited=None, frontier=None, current=None):
@@ -78,7 +77,6 @@ class Manager:
 
     @staticmethod
     def _create_solver(algorithm: str, maze: Maze):
-        """Фабрика алгоритмов."""
         algorithm = algorithm.lower()
         if algorithm == "astar":
             return Astar(maze, chebyshev)
@@ -88,7 +86,7 @@ class Manager:
             return Dijkstra(maze)
         raise ValueError(f"Unknown algorithm: {algorithm}")
 
-    def start_simulation(self, maze_name, config_path, algorithm="astar", delay=None):
+    def start_simulation(self, maze_name, config_path, algorithm="astar"):
         """
         ГЛАВНЫЙ МЕТОД ДЛЯ GUI.
 
@@ -103,31 +101,16 @@ class Manager:
 
         maze = Maze(data, maze_name)
         solver = self._create_solver(algorithm, maze)
-
-        if delay is not None:
-            # delay можно использовать в GUI или передать в алгоритм, если у него есть set_delay
-            self.delay = max(0.0, float(delay))
-            if hasattr(solver, "set_delay"):
-                solver.set_delay(self.delay)
-
         return maze, solver
 
-    def run_cli_simulation(self, maze_name, config_path, algorithm="astar", delay=None):
-        """
-        СТАРОЕ ПОВЕДЕНИЕ ДЛЯ КОНСОЛИ.
-        Используется только в CLI-версии (main.py).
-
-        GUI ЭТО НЕ ВЫЗЫВАЕТ.
-        """
+    def run_cli_simulation(self, maze_name, config_path, algorithm="astar", delay=0.5):
         maze, solver = self.start_simulation(
             maze_name=maze_name,
             config_path=config_path,
             algorithm=algorithm,
-            delay=delay,
         )
 
-        sleep_time = self.delay
-        iters = 0
+        sleep_time = delay
 
         while True:
             status, path = solver.step()
